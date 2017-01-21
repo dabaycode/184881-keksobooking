@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Dmitry Bayko](https://up.htmlacademy.ru/javascript/8/user/184881).
-* Наставник: `Неизвестно`.
+* Наставник: [Данил Чекалин] (https://htmlacademy.ru/profile/id335807)
 
 ---
 
