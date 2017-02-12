@@ -2,71 +2,144 @@
 var allPin = document.querySelector('.tokyo__pin-map');
 var dialog = document.querySelector('.dialog');
 var dialogСlose = document.querySelector('.dialog__close');
+var capacity = document.querySelector('#capacity');
+var roomNumber = document.querySelector('#room_number');
+var price = document.querySelector('#price');
+var time = document.querySelector('#time');
+var timeout = document.querySelector('#timeout');
+var inputType = document.querySelector('#type');
 
-allPin.onclick = function (event) {
+/**
+ * anonymous function - Отлавливает нажатие на элемент target и вызывает
+ * функцию highlight. Если target - родительский элемент, функция не
+ * срабатывает, если img, то подсветит родителя, иначе подствеит
+ * target - элемет.
+ *
+ * @param  {object} event - Принимает координаты события click.
+ * @return {undefined} - Выход из функции.
+ */
+allPin.addEventListener('click', function (event) {
+
   var target = event.target;
-  if (target.tagName === 'DIV') {
-    highlight(target);
-    return;
-  }
-  target = target.parentNode;
-};
 
+  if (target === allPin) {
+
+    return;
+  } else {
+    if (target.nodeName === 'IMG') {
+      highlight(target.parentNode);
+    } else {
+      highlight(target);
+    }
+  }
+});
+
+/**
+ * addClass - Добавляе класс переданному элементу.
+ *
+ * @param  {object} node - DOM - элемент
+ * @param  {string} newClass - Класс, которые необходимо добавить
+ */
+function addClass(node, newClass) {
+  node.classList.add(newClass);
+}
+
+/**
+ * removeClass - Удаляет класс у переданного элемента.
+ *
+ * @param  {object} node - DOM - элемент
+ * @param  {string} delClass - Класс, которые необходимо удалить
+ */
+
+function removeClass(node, delClass) {
+  node.classList.remove(delClass);
+}
+
+/**
+ * highlight - удаляет класс pin--active у всех элементов, добавлет класс
+ * pin--active, переданному элементу. Открывает окно dialog.
+ *
+ * @param  {object} node - DOM - элемент
+ */
 function highlight(node) {
 
   var activePin = allPin.querySelector('.pin--active');
-  if (activePin) { // Если до этого у другого элемента существовал класс pin--active, то у этого элемента класс нужно убрать
-    activePin.classList.remove('pin--active');
+
+  if (activePin) {
+    removeClass(activePin, 'pin--active');
   }
-  if (node.classList.contains('pin--active')) {
-    node.classList.remove('pin--active');
-    dialog.style.display = 'none';
-  } else {
-    node.classList.add('pin--active');
-    dialog.style.display = 'block';
-  }
+  addClass(node, 'pin--active');
+  dialog.style.display = 'block';
 }
 
-dialogСlose.addEventListener('click', function () { // закрытие карточки
+/**
+ * anonymous function - Удаляет класс pin--active у всех активных элементов.
+ * Закрывает окно dialog.
+ *
+ * @param {object} activePin - Принимает все элементы с классом pin--active.
+ */
+
+dialogСlose.addEventListener('click', function () {
+
+  var activePin = allPin.querySelector('.pin--active');
+
+  removeClass(activePin, 'pin--active');
   dialog.style.display = 'none';
-  var active = allPin.querySelector('.pin--active');
-  active.classList.remove('pin--active');
 });
 
-var Price = document.getElementById('price');
-Price.addEventListener('change', function () { // Значение поля «Тип жилья» синхронизировано с минимальной ценой
-  if (Price.value >= 10000) {
-    document.getElementById('type').options[2].selected = true;
+
+/**
+ * anonymous function - реагирует на изменение поля с id Price и в зависимости
+ * от значение выбирает определенное значение в поле с id type,
+ *
+ * @return {undefined} - выход из функции
+ */
+price.addEventListener('change', function () {
+  if (price.value >= 10000) {
+    inputType.options[2].selected = true;
+
     return;
   }
-  if (Price.value > 1000 && Price.value < 10000) {
-    document.getElementById('type').options[0].selected = true;
+  if (price.value > 1000 && price.value < 10000) {
+    inputType.options[0].selected = true;
+
     return;
   }
-  if (Price.value <= 1000) {
-    document.getElementById('type').options[1].selected = true;
+  if (price.value <= 1000) {
+    inputType.options[1].selected = true;
   }
 });
 
-var Capacity = document.getElementById('capacity');
-var RoomNumber = document.getElementById('room_number');
-
-RoomNumber.addEventListener('change', function () { // Количество комнат связано с количеством гостей
-  if (RoomNumber.options[0].selected === true) {
-    Capacity.options[1].selected = true;
+/**
+ * anonymous function - реагирует на изменение поля с id room_number и в зависимости
+ * от значение выбирает определенное значение в поле с id capacity.
+ */
+roomNumber.addEventListener('change', function () {
+  if (roomNumber.options[0].selected === true) {
+    capacity.options[1].selected = true;
   } else {
-    Capacity.options[0].selected = true;
+    capacity.options[0].selected = true;
   }
 });
 
-var Time = document.getElementById('time');
-var Timeout = document.getElementById('timeout');
-Time.addEventListener('change', function () { // Поля «время заезда» и «время выезда»
-  var n = document.getElementById('time').options.selectedIndex;
-  Timeout.options[n].selected = true;
-});
+/**
+ * timeChoose - выбирает в поле time2 значение в зависимости от значения time 1.
+ *
+ * @param  {object} time1 - поле выбора времени 1.
+ * @param  {object} time2 - поле выбора времени 2.
+ * @param  {object} event - принимает событие change и связанные элементы.
+ */
+function timeChoose(time1, time2, event) {
+  var selectedIndex = time1.options.selectedIndex;
+  time2.options[selectedIndex].selected = true;
+}
 
-Timeout.addEventListener('change', function () {
-  var k = document.getElementById('timeout').options.selectedIndex;
-  Time.options[k].selected = true;
-});
+/**
+ * Вызывает функцию timeChoose при изменение поля с id time
+ */
+time.addEventListener('change', timeChoose.bind(null, time, timeout));
+
+/**
+ * Вызывает функцию timeChoose при изменение поля с id timeout
+ */
+timeout.addEventListener('change', timeChoose.bind(null, timeout, time));
