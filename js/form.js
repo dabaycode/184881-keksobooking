@@ -8,6 +8,7 @@ var price = document.querySelector('#price');
 var time = document.querySelector('#time');
 var timeout = document.querySelector('#timeout');
 var inputType = document.querySelector('#type');
+var ENTER_KEY_CODE = 13;
 
 /**
  * anonymous function - Отлавливает нажатие на элемент target и вызывает
@@ -18,10 +19,8 @@ var inputType = document.querySelector('#type');
  * @param  {object} event - Принимает координаты события click.
  * @return {undefined} - Выход из функции.
  */
-allPin.addEventListener('click', function (event) {
-
+allPin.addEventListener('click', function () {
   var target = event.target;
-
   if (target === allPin) {
 
     return;
@@ -33,6 +32,41 @@ allPin.addEventListener('click', function (event) {
     }
   }
 });
+
+/**
+ * anonymous function - Отлавливает нажатие на элемент target и вызывает
+ * функцию highlight.Если нажата клавиша Enter, то подстветка сработает для
+ * нажатого элемента.
+ *
+ * @param  {object} target - DOM - элемент
+ * @param  {number} ENTER_KEY_CODE -  постоянное значение keycode для клавиши Enter
+ */
+allPin.addEventListener('keydown', function () {
+  if (event.keyCode === ENTER_KEY_CODE) {
+
+    var target = event.target;
+
+    highlight(target);
+  }
+});
+
+/**
+ * trueAriaPressed - Изменяет значение атрибута aria-pressed на true.
+ *
+ * @param  {object} element - DOM - элемент
+ */
+function trueAriaPressed(element) {
+  element.setAttribute('aria-pressed', true);
+}
+
+/**
+ * falseAriaPressed - Изменяет значение атрибута aria-pressed на false.
+ *
+ * @param  {object} element - DOM - элемент
+ */
+function falseAriaPressed(element) {
+  element.setAttribute('aria-pressed', false);
+}
 
 /**
  * addClass - Добавляе класс переданному элементу.
@@ -50,14 +84,14 @@ function addClass(node, newClass) {
  * @param  {object} node - DOM - элемент
  * @param  {string} delClass - Класс, которые необходимо удалить
  */
-
 function removeClass(node, delClass) {
   node.classList.remove(delClass);
 }
 
 /**
- * highlight - удаляет класс pin--active у всех элементов, добавлет класс
- * pin--active, переданному элементу. Открывает окно dialog.
+ * highlight - удаляет класс pin--active у всех элементов и меняет значение
+ *атрибута aria-pressed на false, добавлет класс pin--active переданному элементу
+ *  и меняет значение атрибута aria-pressed на true. Открывает окно dialog.
  *
  * @param  {object} node - DOM - элемент
  */
@@ -67,9 +101,11 @@ function highlight(node) {
 
   if (activePin) {
     removeClass(activePin, 'pin--active');
+    falseAriaPressed(activePin);
   }
   addClass(node, 'pin--active');
   dialog.style.display = 'block';
+  trueAriaPressed(node);
 }
 
 /**
@@ -78,7 +114,6 @@ function highlight(node) {
  *
  * @param {object} activePin - Принимает все элементы с классом pin--active.
  */
-
 dialogСlose.addEventListener('click', function () {
 
   var activePin = allPin.querySelector('.pin--active');
@@ -86,7 +121,6 @@ dialogСlose.addEventListener('click', function () {
   removeClass(activePin, 'pin--active');
   dialog.style.display = 'none';
 });
-
 
 /**
  * anonymous function - реагирует на изменение поля с id Price и в зависимости
